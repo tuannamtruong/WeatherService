@@ -1,0 +1,201 @@
+{
+    "queryCost": 1,
+    "latitude": 49.0092,
+    "longitude": 8.404,
+    "resolvedAddress": "Karlsruhe",
+    "address": "Karlsruhe",
+    "timezone": "Europe/Berlin",
+    "tzoffset": 1,
+    "description": "Similar temperatures continuing with a chance of rain multiple days.",
+    "days": [
+      {
+        "datetime": "2026-02-19",
+        "datetimeEpoch": 1771455600,
+        "tempmax": 7,
+        "tempmin": 2.6,
+        "temp": 4.3,
+        "feelslikemax": 4.9,
+        "feelslikemin": -0.6,
+        "feelslike": 2.6,
+        "dew": 3.3,
+        "humidity": 93.3,
+        "precip": 4.7,
+        "precipprob": 100,
+        "precipcover": 62.5,
+        "preciptype": [
+          "rain"
+        ],
+        "snow": 0,
+        "snowdepth": 0,
+        "windgust": 37.1,
+        "windspeed": 14.8,
+        "winddir": 32.8,
+        "pressure": 1001.8,
+        "cloudcover": 96.9,
+        "visibility": 11.8,
+        "solarradiation": 37,
+        "solarenergy": 3.1,
+        "uvindex": 2,
+        "severerisk": 10,
+        "sunrise": "07:27:54",
+        "sunriseEpoch": 1771482474,
+        "sunset": "17:53:23",
+        "sunsetEpoch": 1771520003,
+        "moonphase": 0.07,
+        "conditions": "Rain, Overcast",
+        "description": "Cloudy skies throughout the day with a chance of rain throughout the day.",
+        "icon": "rain",
+        "stations": [
+          "E4164",
+          "C7842",
+          "EDSB"
+        ],
+        "source": "comb",
+        "hours": [
+          {
+            "datetime": "04:00:00",
+            "datetimeEpoch": 1771470000,
+            "temp": 3,
+            "feelslike": 3,
+            "humidity": 100,
+            "dew": 3,
+            "precip": 0.1,
+            "precipprob": 100,
+            "snow": 0,
+            "snowdepth": 0,
+            "preciptype": [
+              "rain"
+            ],
+            "windgust": 26.3,
+            "windspeed": 1.8,
+            "winddir": 227.7,
+            "pressure": 999,
+            "visibility": 5,
+            "cloudcover": 100,
+            "solarradiation": 0,
+            "solarenergy": 0,
+            "uvindex": 0,
+            "severerisk": 10,
+            "conditions": "Rain, Overcast",
+            "icon": "rain",
+            "stations": [
+              "C7842",
+              "EDSB"
+            ],
+            "source": "obs"
+          },
+          {
+            "datetime": "05:00:00",
+            "datetimeEpoch": 1771473600,
+            "temp": 3,
+            "feelslike": 3,
+            "humidity": 100,
+            "dew": 3,
+            "precip": 1.1,
+            "precipprob": 100,
+            "snow": 0,
+            "snowdepth": 0,
+            "preciptype": [
+              "rain"
+            ],
+            "windgust": 24.1,
+            "windspeed": 3.6,
+            "winddir": 239.4,
+            "pressure": 999,
+            "visibility": 5,
+            "cloudcover": 100,
+            "solarradiation": 0,
+            "solarenergy": 0,
+            "uvindex": 0,
+            "severerisk": 10,
+            "conditions": "Rain, Overcast",
+            "icon": "rain",
+            "stations": [
+              "C7842",
+              "EDSB"
+            ],
+            "source": "obs"
+          }
+        ]
+      }
+    ],
+    "alerts": [],
+    "stations": {
+      "04177": {
+        "distance": 6763,
+        "latitude": 48.973,
+        "longitude": 8.33,
+        "useCount": 0,
+        "id": "04177",
+        "name": "Rheinstetten",
+        "quality": 100,
+        "contribution": 0
+      },
+      "C7842": {
+        "distance": 3528,
+        "latitude": 49.014,
+        "longitude": 8.356,
+        "useCount": 0,
+        "id": "C7842",
+        "name": "CW7842 Karlsruhe DE",
+        "quality": 0,
+        "contribution": 0
+      },
+      "E4164": {
+        "distance": 30987,
+        "latitude": 49.096,
+        "longitude": 8,
+        "useCount": 0,
+        "id": "E4164",
+        "name": "EW4164 Bad Bergzabern DE",
+        "quality": 0,
+        "contribution": 0
+      },
+      "EDSB": {
+        "distance": 34832,
+        "latitude": 48.78,
+        "longitude": 8.08,
+        "useCount": 0,
+        "id": "EDSB",
+        "name": "EDSB",
+        "quality": 50,
+        "contribution": 0
+      }
+    },
+    "currentConditions": {
+      "datetime": "16:05:00",
+      "datetimeEpoch": 1771513500,
+      "temp": 7.2,
+      "feelslike": 7.2,
+      "humidity": 82.7,
+      "dew": 4.5,
+      "precip": 0,
+      "precipprob": 0,
+      "snow": 0,
+      "snowdepth": 0,
+      "preciptype": null,
+      "windgust": 11.2,
+      "windspeed": 3.2,
+      "winddir": 101,
+      "pressure": 1001,
+      "visibility": 10,
+      "cloudcover": 88,
+      "solarradiation": 23,
+      "solarenergy": 0.1,
+      "uvindex": 0,
+      "conditions": "Partially cloudy",
+      "icon": "partly-cloudy-day",
+      "stations": [
+        "04177",
+        "E4164",
+        "C7842",
+        "EDSB"
+      ],
+      "source": "obs",
+      "sunrise": "07:27:54",
+      "sunriseEpoch": 1771482474,
+      "sunset": "17:53:23",
+      "sunsetEpoch": 1771520003,
+      "moonphase": 0.07
+    }
+  }

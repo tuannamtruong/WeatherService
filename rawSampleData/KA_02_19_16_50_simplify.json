@@ -1,0 +1,39 @@
+{
+  "resolvedAddress": "Karlsruhe",
+  "address": "Karlsruhe",
+  "description": "Similar temperatures continuing with a chance of rain multiple days.",
+  "days": [
+    {
+      "datetime": "2026-02-19",
+      "tempmax": 7,
+      "tempmin": 2.6,
+      "temp": 4.3,
+      "feelslikemax": 4.9,
+      "feelslikemin": -0.6,
+      "feelslike": 2.6,
+      "humidity": 93.3,
+      "precip": 4.7,
+      "precipprob": 100,
+      "precipcover": 62.5,
+      "preciptype": ["rain"],
+      "windgust": 37.1,
+      "windspeed": 14.8,
+      "conditions": "Rain, Overcast",
+      "description": "Cloudy skies throughout the day with a chance of rain throughout the day."
+    }
+  ],
+  "currentConditions": {
+    "datetime": "16:05:00",
+    "temp": 7.2,
+    "feelslike": 7.2,
+    "humidity": 82.7,
+    "dew": 4.5,
+    "precip": 0,
+    "precipprob": 0,
+    "snow": 0,
+    "snowdepth": 0,
+    "preciptype": null,
+    "windgust": 11.2,
+    "windspeed": 3.2
+  }
+}
