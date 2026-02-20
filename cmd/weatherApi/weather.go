@@ -1,31 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"os"
+
+	"github.com/tuannamtruong/WeatherService/internal/config"
 )
-
-type Config struct {
-	ApiKey string `json:"ApiKey"`
-}
-
-// Reads and parses JSON
-// or terminates the process if failed
-func MustLoadConfig(path string) Config {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		log.Fatalf("CRITICAL: Failed to read config file at %s: %v", path, err)
-	}
-	var cfg Config
-	if err = json.Unmarshal(data, &cfg); err != nil {
-		log.Fatalf("CRITICAL: Failed to parse config JSON: %v", err)
-	}
-	return cfg
-}
 
 func main() {
 	// data, err := os.ReadFile("config.json")
@@ -35,8 +17,9 @@ func main() {
 	// }
 
 	// Call API
+	// If city not inside cache, then call API and store result in cache
 	if true {
-		config := MustLoadConfig("config.json")
+		config := config.MustLoadConfig()
 
 		// Reading weather data for city
 		weatherEndpoint := fmt.Sprintf("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Karlsruhe?unitGroup=metric&key=%s&contentType=json", config.ApiKey)
@@ -53,5 +36,4 @@ func main() {
 
 		fmt.Println(string(body))
 	}
-
 }
