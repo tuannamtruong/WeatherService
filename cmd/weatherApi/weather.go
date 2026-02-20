@@ -16,8 +16,10 @@ func main() {
 	// 	return
 	// }
 
+	// If city inside cache, return result inside cache
+	// else call API and store result in cache
+
 	// Call API
-	// If city not inside cache, then call API and store result in cache
 	if true {
 		config := config.MustLoadConfig()
 
@@ -35,5 +37,6 @@ func main() {
 		}
 
 		fmt.Println(string(body))
+
 	}
 }
