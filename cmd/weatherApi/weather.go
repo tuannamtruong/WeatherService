@@ -13,6 +13,7 @@ func printCurrentConditions(loc string, cc *weatherService.CurrentConditions) {
 	fmt.Printf("%-25s %.1f °C (feels like %.1f °C)\n", "Temp: ", cc.Temp, cc.FeelsLike)
 	fmt.Printf("%-25s %.1f km/h %-3s (gust %.1f km/h)\n", "Wind:", cc.WindSpeed, windDirectionLabel(cc.WindDir), cc.WindGust)
 	fmt.Printf("%-25s %s\n", "Conditions:", cc.Conditions)
+	fmt.Println()
 }
 
 func printWeatherForcast(days []weatherService.DayCondition) {
