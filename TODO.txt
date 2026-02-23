@@ -1,9 +1,8 @@
 Current:
-handle weather result. Print out what are important.
-extract the weather call to its own package
-----------------------------
-Backlogs:
-Get weather by city
 Then get city by input, maybe API endpoint parameter
 cache the result
+----------------------------
+Backlogs:
 Sleep for 100s afters
+docker
+K8s

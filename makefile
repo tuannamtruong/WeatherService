@@ -10,7 +10,7 @@ vet: fmt
 		go vet ./...
 
 build: vet
-		go build -buildvcs=false
+		go build -buildvcs=false cmd/weatherApi/weather.go
 
 run: 
 		go run -buildvcs=false cmd/weatherApi/weather.go
