@@ -1,4 +1,5 @@
 Current:
+Weather city by input
 Then get city by input, maybe API endpoint parameter
 cache the result
 ----------------------------
