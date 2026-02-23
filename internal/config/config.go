@@ -6,8 +6,9 @@ import (
 	"os"
 )
 
+// Configuration for the applciation.
 type Config struct {
-	ApiKey string `json:"ApiKey"`
+	WeatherServiceApiKey string `json:"ApiKey"`
 }
 
 // Reads and parses config file "config.json"
