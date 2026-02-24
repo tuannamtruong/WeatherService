@@ -4,6 +4,7 @@
 
 REDIS_CONTAINER_NAME := redis_db
 REDIS_IMG := redis:8-alpine
+MODE ?= API
 
 build:
 	go fmt ./...
@@ -33,4 +34,4 @@ redis:
 	fi
 
 
-it: redis ddock
+it: redis run
