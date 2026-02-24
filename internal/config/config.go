@@ -9,6 +9,7 @@ import (
 // Configuration for the applciation.
 type Config struct {
 	WeatherServiceApiKey string `json:"ApiKey"`
+	RedisUrl             string `json:"RedisURL"`
 }
 
 // Reads and parses config file "config.json"

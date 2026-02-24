@@ -7,7 +7,7 @@ Idea from https://roadmap.sh/projects/weather-api-wrapper-service
 
 To run as docker image:
 ```
-make devdock MODE=$MODE$
+make ddock MODE=$MODE$
 ```
 
 To run as go program in local env

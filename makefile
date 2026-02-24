@@ -1,15 +1,13 @@
 .DEFAULT_GOAL := run
 
-.PHONY:fmt vet build run dock
+.PHONY: build run dock redis
 
+REDIS_CONTAINER_NAME := redis_db
+REDIS_IMG := redis:8-alpine
 
-fmt:
+build:
 	go fmt ./...
-
-vet: fmt
 	go vet ./...
-
-build: vet
 	go build -buildvcs=false cmd/weatherApi/weather.go
 
 run: 
@@ -26,6 +24,13 @@ pdock: build
 	docker build -t weather-go-app:prod .
 	docker run --rm -p 12345:8080 --name weather-go-app-prod weather-go-app:prod ./weather-service -mode=API -port=8080
 
-dock: build
-	go mod tidy
-	docker build -t weather-go-app:prod .
+# !!!ONLY POSSIBLE IN BASH!!!
+redis: 
+	@if [ $$(docker ps -aq -f name=$(REDIS_CONTAINER_NAME)) ]; then \
+		docker start $(REDIS_CONTAINER_NAME); \
+	else \
+		docker run -d --name $(REDIS_CONTAINER_NAME) -p 6379:6379 $(REDIS_IMG); \
+	fi
+
+
+it: redis ddock

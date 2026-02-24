@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/tuannamtruong/WeatherService/internal/api"
+	"github.com/tuannamtruong/WeatherService/internal/cache"
 	"github.com/tuannamtruong/WeatherService/internal/config"
 	"github.com/tuannamtruong/WeatherService/internal/console"
 	weatherService "github.com/tuannamtruong/WeatherService/internal/service"
@@ -32,8 +33,18 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Setting up services
 	weatherClient := weatherService.NewWeatherClient(config.WeatherServiceApiKey)
 
+	// Redis
+	cache, err := cache.NewCache(config.RedisUrl)
+	if err != nil {
+		log.Printf("Caching unavailable (%v).", err)
+	} else {
+		defer cache.Close()
+	}
+
+	// Run the application based on the selected mode
 	switch *mode {
 	case "CON":
 		runAsConsoleApplication(weatherClient)
