@@ -1,5 +1,7 @@
 Current:
-cache the result
+Getting cache in redis
+Log cache hit and miss.
+Request to different servcices to check if cache db shared correctly between services.
 ----------------------------
 Backlogs:
 Sleep for 100s afters

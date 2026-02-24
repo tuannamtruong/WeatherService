@@ -1,0 +1,27 @@
+services:
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  weather-api:
+    build:
+      context: .
+      dockerfile: dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - 8080
+    deploy:
+      replicas: 2
+
+volumes:
+  redis_data:

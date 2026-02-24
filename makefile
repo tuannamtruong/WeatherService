@@ -33,5 +33,8 @@ redis:
 		docker run -d --name $(REDIS_CONTAINER_NAME) -p 6379:6379 $(REDIS_IMG); \
 	fi
 
+up:
+	docker compose -f docker-compose.dev.yml up -d
 
-it: redis run
+down:
+	docker compose -f docker-compose.dev.yml down
