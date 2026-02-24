@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	weatherService "github.com/tuannamtruong/WeatherService/internal/service"
@@ -66,12 +67,12 @@ func (s *Server) handleWeather(w http.ResponseWriter, r *http.Request) {
 		Details: weatherCondition})
 }
 
-func InitServer(client *weatherService.WeatherClient) *http.Server {
+func InitServer(client *weatherService.WeatherClient, port int) *http.Server {
 	s := &Server{client: client, mux: http.NewServeMux()}
 	s.routes()
 
 	srv := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":" + strconv.Itoa(port),
 		Handler:      s,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,

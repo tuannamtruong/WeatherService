@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,6 +15,69 @@ import (
 	"github.com/tuannamtruong/WeatherService/internal/config"
 	weatherService "github.com/tuannamtruong/WeatherService/internal/service"
 )
+
+func main() {
+	log.Printf("Loading Settings")
+	config := config.MustLoadConfig()
+
+	mode := flag.String("mode", "API", "Running mode: CON or API")
+	port := flag.Int("port", 8080, "Port for the API server")
+	flag.Parse()
+	if mode == nil {
+		log.Fatalln("Required flag 'mode' is not provided")
+		os.Exit(1)
+	}
+	if *mode == "API" && port == nil {
+		log.Fatalln("Required flag 'port' is not provided for API mode")
+		os.Exit(1)
+	}
+
+	weatherClient := weatherService.NewWeatherClient(config.WeatherServiceApiKey)
+
+	switch *mode {
+	case "CON":
+		runAsConsoleApplication(weatherClient)
+	case "API":
+		runAsApiServer(weatherClient, port)
+	}
+}
+
+func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int) {
+	log.Printf("Initializing API Server")
+	srv := api.InitServer(weatherClient, *port)
+	go func() {
+		log.Printf("Weather API is running")
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server error: %v", err)
+		}
+	}()
+
+	// Graceful Shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down")
+
+	// Safe Exit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Forced shutdown: %v", err)
+	}
+	log.Println("Server stopped")
+}
+
+func runAsConsoleApplication(weatherClient *weatherService.WeatherClient) {
+	log.Printf("Running in Console Mode")
+	location := "Karlsruhe"
+	weatherCondition, err := weatherClient.GetWeather(location)
+	if err != nil {
+		log.Fatalf("Failed to get weather: %v", err)
+	}
+	printCurrentConditions(location, weatherCondition.CurrentConditions)
+	printWeatherForcast(weatherCondition.DayConditions)
+	printHourlyBreakdown(weatherCondition.DayConditions[0])
+}
 
 func printCurrentConditions(loc string, cc *weatherService.CurrentConditions) {
 	fmt.Printf("%-25s %s, Time: %s\n", "Location:", loc, cc.Datetime)
@@ -58,42 +122,4 @@ func windDirectionLabel(degrees float64) string {
 	dirs := []string{"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
 	idx := int((degrees+22.5)/45) % 8
 	return dirs[idx]
-}
-
-func main() {
-	log.Printf("Loading Config")
-	config := config.MustLoadConfig()
-	weatherClient := weatherService.NewWeatherClient(config.WeatherServiceApiKey)
-
-	// location := "Karlsruhe"
-	// weatherCondition, err := weatherClient.GetWeather(location)
-	// if err != nil {
-	// 	log.Fatalf("Failed to get weather: %v", err)
-	// }
-	// printCurrentConditions(location, weatherCondition.CurrentConditions)
-	// printWeatherForcast(weatherCondition.DayConditions)
-	// printHourlyBreakdown(weatherCondition.DayConditions[0])
-
-	log.Printf("Initializing Server")
-	srv := api.InitServer(weatherClient)
-	go func() {
-		log.Printf("Weather API is running")
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("Server error: %v", err)
-		}
-	}()
-
-	// Graceful Shutdown
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	log.Println("Shutting down")
-
-	// Safe Exit
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatalf("Forced shutdown: %v", err)
-	}
-	log.Println("Server stopped")
 }
