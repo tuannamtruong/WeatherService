@@ -30,13 +30,6 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	log.Printf("%s %s %s", r.Method, r.URL.Path, time.Since(timeStamp))
 }
 
-// writeJSON sends a JSON-encoded body with the given status code.
-func writeJSON(w http.ResponseWriter, status int, v interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	json.NewEncoder(w).Encode(v)
-}
-
 func (s *Server) routes() {
 	s.mux.HandleFunc("/api/weather", s.handleWeather)
 }
@@ -79,4 +72,11 @@ func InitServer(client *weatherService.WeatherClient, port int) *http.Server {
 		IdleTimeout:  60 * time.Second,
 	}
 	return srv
+}
+
+// writeJSON sends a JSON-encoded body with the given status code.
+func writeJSON(w http.ResponseWriter, status int, v interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(v)
 }
