@@ -27,18 +27,6 @@ Export API at `localhost:8080/api/weather`
 Parameters: `location`
 
 ## Info
-Go Structure: https://github.com/golang-standards/project-layout
-
-Go Miscs.:
-- Accept interfaces, return structs. Implicit interfaces.  https://medium.com/@cep21/preemptive-interface-anti-pattern-in-go-54c18ac0668a
-- Learning Go (2nd Ed) - Jon Bodner
-- Syntax https://gobyexample.com/
-- Go Env, module, ver: https://go.dev/doc/
-- STD: https://pkg.go.dev/fmt@go1.26.0
-- TBD
-    - Diagnose: https://100go.co/
-    - Let's Go Further! - Alex Edwards
-
 Weather API: https://www.visualcrossing.com/weather-api/
 
 Weather API Query Builder: https://www.visualcrossing.com/weather-query-builder/
