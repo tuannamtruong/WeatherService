@@ -1,9 +1,16 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
+	"github.com/tuannamtruong/WeatherService/internal/api"
 	"github.com/tuannamtruong/WeatherService/internal/config"
 	weatherService "github.com/tuannamtruong/WeatherService/internal/service"
 )
@@ -54,20 +61,39 @@ func windDirectionLabel(degrees float64) string {
 }
 
 func main() {
-	// If city inside cache, return result inside cache
-	// else call API and store result in cache
+	log.Printf("Loading Config")
+	config := config.MustLoadConfig()
+	weatherClient := weatherService.NewWeatherClient(config.WeatherServiceApiKey)
 
-	// Call API
-	if true {
-		config := config.MustLoadConfig()
-		location := "Karlsruhe"
-		weatherClient := weatherService.NewWeatherClient(config.WeatherServiceApiKey)
-		weatherCondition, err := weatherClient.GetWeather(location)
-		if err != nil {
-			log.Fatalf("Failed to get weather: %v", err)
+	// location := "Karlsruhe"
+	// weatherCondition, err := weatherClient.GetWeather(location)
+	// if err != nil {
+	// 	log.Fatalf("Failed to get weather: %v", err)
+	// }
+	// printCurrentConditions(location, weatherCondition.CurrentConditions)
+	// printWeatherForcast(weatherCondition.DayConditions)
+	// printHourlyBreakdown(weatherCondition.DayConditions[0])
+
+	log.Printf("Initializing Server")
+	srv := api.InitServer(weatherClient)
+	go func() {
+		log.Printf("Weather API is running")
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server error: %v", err)
 		}
-		printCurrentConditions(location, weatherCondition.CurrentConditions)
-		printWeatherForcast(weatherCondition.DayConditions)
-		printHourlyBreakdown(weatherCondition.DayConditions[0])
+	}()
+
+	// Graceful Shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	log.Println("Shutting down")
+
+	// Safe Exit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatalf("Forced shutdown: %v", err)
 	}
+	log.Println("Server stopped")
 }

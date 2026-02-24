@@ -1,9 +1,6 @@
 Current:
-Weather city by input
-Then get city by input, maybe API endpoint parameter
 cache the result
 ----------------------------
 Backlogs:
 Sleep for 100s afters
-docker
 K8s

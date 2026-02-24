@@ -1,3 +1,4 @@
+// Getting weather data from Visual Crossing Weather API
 package weatherService
 
 import (
