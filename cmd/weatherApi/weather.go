@@ -42,6 +42,7 @@ func main() {
 	}
 }
 
+// Run the application as an API server
 func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int) {
 	log.Printf("Initializing API Server")
 	srv := api.InitServer(weatherClient, *port)
@@ -67,6 +68,7 @@ func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int) {
 	log.Println("Server stopped")
 }
 
+// Get weather of karlsruhe and print to console
 func runAsConsoleApplication(weatherClient *weatherService.WeatherClient) {
 	log.Printf("Running in Console Mode")
 	location := "Karlsruhe"

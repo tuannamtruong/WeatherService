@@ -18,4 +18,4 @@ WORKDIR /app
 COPY --from=builder /app/weather-service /app/weather-service
 COPY --from=builder /app/config.json /app/config.json
 
-CMD ["./weather-service"]
+CMD ["./weather-service", "-mode=API"] 

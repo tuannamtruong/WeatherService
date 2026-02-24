@@ -57,7 +57,7 @@ func (s *Server) handleWeather(w http.ResponseWriter, r *http.Request) {
 	location := parseQuery(r)
 	weatherCondition, err := s.client.GetWeather(location)
 	if err != nil {
-		log.Printf("HTTP request failed: %w", err)
+		log.Printf("HTTP request failed: %v", err)
 		writeJSON(w, http.StatusBadGateway, APIResponse{Success: false, Message: "Failed to get weather for" + location, Description: err.Error()})
 		return
 	}
