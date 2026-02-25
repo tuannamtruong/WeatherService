@@ -7,6 +7,11 @@ REDIS_IMG := redis:8-alpine
 MODE ?= API
 
 # Development 
+logApp:
+	docker compose -f docker-compose.dev.yml logs -f weather-api-server
+logCache:
+	docker compose -f docker-compose.dev.yml logs -f redis-cache
+
 build:
 	go fmt ./...
 	go vet ./...

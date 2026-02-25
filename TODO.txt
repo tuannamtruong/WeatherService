@@ -6,3 +6,4 @@ Request to different servcices to check if cache db shared correctly between ser
 Backlogs:
 Sleep for 100s afters
 K8s
+Cache in Heap memory for console application

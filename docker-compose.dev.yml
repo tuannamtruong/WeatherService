@@ -1,6 +1,6 @@
 services:
 
-  redis:
+  redis-cache:
     image: redis:8-alpine
     restart: unless-stopped
     ports:
@@ -13,7 +13,7 @@ services:
       timeout: 3s
       retries: 5
 
-  weather-api:
+  weather-api-server:
     build:
       context: .
       dockerfile: dockerfile.dev
