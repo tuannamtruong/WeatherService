@@ -6,6 +6,7 @@ REDIS_CONTAINER_NAME := redis_db
 REDIS_IMG := redis:8-alpine
 MODE ?= API
 
+# Development 
 build:
 	go fmt ./...
 	go vet ./...
@@ -20,11 +21,6 @@ ddock:
 	docker build -f dockerfile.dev -t weather-go-app:dev .
 	docker run --rm -p 8085:8080 --name weather-go-app-dev weather-go-app:dev ./weather-service -mode=$(MODE) -port=8080
 
-pdock: build
-	go mod tidy
-	docker build -t weather-go-app:prod .
-	docker run --rm -p 12345:8080 --name weather-go-app-prod weather-go-app:prod ./weather-service -mode=API -port=8080
-
 # !!!ONLY POSSIBLE IN BASH!!!
 redis: 
 	@if [ $$(docker ps -aq -f name=$(REDIS_CONTAINER_NAME)) ]; then \
@@ -38,3 +34,17 @@ up:
 
 down:
 	docker compose -f docker-compose.dev.yml down
+
+# Production
+pdock: build
+	go mod tidy
+	docker build -t weather-go-app:prod .
+	docker run --rm -p 12345:8080 --name weather-go-app-prod weather-go-app:prod ./weather-service -mode=API -port=8080
+
+produp: build 
+	go mod tidy
+	docker build -t weather-go-app:prod .
+	docker compose -f docker-compose.yml up -d
+
+proddown:
+	docker compose -f docker-compose.yml down

@@ -1,28 +1,26 @@
-# services:
+services:
 
-#   redis:
-#     image: redis:8-alpine
-#     container_name: redis_db
-#     restart: unless-stopped
-#     ports:
-#       - "6379:6379"
-#     volumes:
-#       - redis_data:/data
-#     healthcheck:
-#       test: ["CMD", "redis-cli", "ping"]
-#       interval: 5s
-#       timeout: 3s
-#       retries: 5
+  redis-cache:
+    image: redis:8-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
-#   weather-api:
-#     build:
-#       context: .
-#       dockerfile: dockerfile
-#     container_name: weather-go-app
-#     restart: unless-stopped
-#     ports:
-#       - "12345:8080"
+  weather-api-server:
+    build:
+      context: .
+      dockerfile: dockerfile
+    restart: unless-stopped
+    ports:
+      - "12345:8080"
     
 
-# volumes:
-#   redis_data:
+volumes:
+  redis_data:
