@@ -7,3 +7,4 @@ Backlogs:
 Sleep for 100s afters
 K8s
 Cache in Heap memory for console application
+Generalize Ping function in weather_api. Adress as parameter.
