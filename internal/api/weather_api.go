@@ -3,12 +3,15 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 
+	"github.com/redis/go-redis/v9"
 	"github.com/tuannamtruong/WeatherService/internal/cache"
 	weatherService "github.com/tuannamtruong/WeatherService/internal/service"
 )
@@ -37,7 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *Server) routes() {
 	log.Println("Setting up routes")
 	s.httpHandler.HandleFunc("/api/weather", s.handleWeather)
-	s.httpHandler.HandleFunc("/api/pingRedis", s.ping)
+	s.httpHandler.HandleFunc("/api/pingRedis", s.pingRedis)
 }
 
 // Get the query from the Url request.
@@ -124,11 +127,19 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 }
 
 // writeJSON sends a JSON-encoded body with the given status code.
-func (s *Server) ping(w http.ResponseWriter, r *http.Request) {
-	log.Printf("PING")
+func (s *Server) pingRedis(w http.ResponseWriter, r *http.Request) {
 	var d net.Dialer
-	// DialContext respects the timeout/cancellation from your ctx
-	conn, err := d.DialContext(r.Context(), "tcp", "127.0.0.1:6379")
+	redisUrl := os.Getenv("REDIS_URL")
+	parsedUrl, err := redis.ParseURL(redisUrl)
+	if err != nil {
+		writeJSON(w, http.StatusServiceUnavailable, APIResponse{
+			Success:     false,
+			Message:     fmt.Sprintf("RedisURL in configuration is not valid. %w", err),
+			Description: err.Error(),
+		})
+		return
+	}
+	conn, err := d.DialContext(r.Context(), "tcp", parsedUrl.Addr)
 	if err != nil {
 		writeJSON(w, http.StatusServiceUnavailable, APIResponse{
 			Success:     false,

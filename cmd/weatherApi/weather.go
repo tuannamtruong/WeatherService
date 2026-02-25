@@ -37,7 +37,8 @@ func main() {
 	weatherClient := weatherService.NewWeatherClient(config.WeatherServiceApiKey)
 
 	// Redis
-	cache, err := cache.NewCache(config.RedisUrl)
+	redisUrl := os.Getenv("REDIS_URL")
+	cache, err := cache.NewCache(redisUrl)
 	if err != nil {
 		log.Printf("Caching unavailable (%v).", err)
 	} else {

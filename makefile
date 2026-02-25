@@ -2,7 +2,7 @@
 
 .PHONY: build run dock redis
 
-REDIS_CONTAINER_NAME := redis_db
+REDIS_CONTAINER_NAME := redis-db
 REDIS_IMG := redis:8-alpine
 MODE ?= API
 
@@ -48,15 +48,6 @@ up:
 
 down:
 	docker compose down
-
-# Production
-# produp: build 
-# 	go mod tidy
-# 	docker build -t weather-go-app:prod .
-# 	docker run --rm -p 8085:8080 --name weather-go-app-prod weather-go-app:prod ./weather-service -mode=$(MODE) -port=8080
-
-# proddown:
-# 	docker compose -f docker-compose.prod.yml down
 
 prodlogapp:
 	docker compose -f docker-compose.prod.yml logs -f weather-api-server

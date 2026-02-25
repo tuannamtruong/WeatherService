@@ -21,13 +21,9 @@ const cacheTTL = 30 * time.Second
 // Creating new cache with Redis connection.
 // Returns error if Redis is not available or the URL is invalid.
 func NewCache(redisUrl string) (*Cache, error) {
-	if redisUrl == "" {
-		return nil, fmt.Errorf("RedisURL in configuration is not set")
-	}
-
 	parsedUrl, err := redis.ParseURL(redisUrl)
 	if err != nil {
-		return nil, fmt.Errorf("RedisURL in configuration is not valid: %w", err)
+		return nil, fmt.Errorf("RedisURL in configuration is not valid. %w", err)
 	}
 
 	client := redis.NewClient(parsedUrl)
