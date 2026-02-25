@@ -49,14 +49,14 @@ func main() {
 	case "CON":
 		runAsConsoleApplication(weatherClient)
 	case "API":
-		runAsApiServer(weatherClient, port)
+		runAsApiServer(weatherClient, port, cache)
 	}
 }
 
 // Run the application as an API server
-func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int) {
+func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int, cache *cache.Cache) {
 	log.Printf("Initializing API Server")
-	srv := api.InitServer(weatherClient, *port)
+	srv := api.InitServer(weatherClient, *port, cache)
 	go func() {
 		log.Printf("Weather API is running")
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
