@@ -5,21 +5,32 @@ Idea from https://roadmap.sh/projects/weather-api-wrapper-service
 
 ## Getting Started
 
-To run as docker image:
-```
-make ddock MODE=$MODE$
-```
+Clone the repository to local machine.
 
-To run as go program in local env
-```
-make run MODE=$MODE$
-```
+To build the go app -> dockerize the app -> run the app as API endpoint
+`make dock` 
 
+To build the go app -> dockerize the app -> run the app as console application, which get weather information for Karlsruhe then stop
+`make dock MODE=CON`
+
+To build the go app -> dockerize the app -> run the app + redis
+`make buildup`
+
+To test with CLI
+`curl --location 'localhost:12345/api/weather?location=Karlsruhe'`
+
+To see what happening in app
+`make prodlogapp`
+
+To see what happening in redis
+`make prodlogcache`
+
+
+## Mode
 $MODE$
 CON: running as console app in Docker.
 API: running as API Server in Docker.
 
-## Mode
 ### Console Mode
 Print Karlsruhe weather to console
 ### API Mode
