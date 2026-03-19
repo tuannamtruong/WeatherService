@@ -8,26 +8,22 @@ MODE ?= API
 
 # Dev Cycle makes for go app
 build:
+	go mod tidy
 	go fmt ./...
 	go vet ./...
-	go build -buildvcs=false cmd/weatherApi/weather.go
-
+# go build -buildvcs=false cmd/weatherApi/weather.go
+	
 run: 
 	go run -buildvcs=false cmd/weatherApi/weather.go -mode=$(MODE)
 
-
-# Full cycle makes
-
-## Build go app
-## Containerize go app
-## Run the container
-dock: 
-	go mod tidy
-	go build -buildvcs=false cmd/weatherApi/weather.go
+dock: build
 	docker build -f dockerfile -t weather-go-app:dev .
+
+dockrun: dock
 	docker run --rm -p 8085:8080 --name weather-go-app-dev weather-go-app:dev ./weather-service -mode=$(MODE) -port=8080
 
 
+# Redis
 ## Start redis container if it exists, otherwise create and start it
 ## !!!ONLY POSSIBLE IN BASH!!!
 redis: 
@@ -37,9 +33,9 @@ redis:
 		docker run -d --name $(REDIS_CONTAINER_NAME) -p 6379:6379 $(REDIS_IMG); \
 	fi
 
-## Docker compose
+# Docker compose
 
-### Build go app before compose
+## Build go app before compose
 buildup:
 	go mod tidy
 	go build -buildvcs=false cmd/weatherApi/weather.go
@@ -49,16 +45,16 @@ buildup:
 down:
 	docker compose down
 
-## Logging
+# Logging
 
-### Prod
+## Prod
 prodlogapp:
 	docker compose -f docker-compose.prod.yml logs -f weather-api-server
 
 prodlogcache:
 	docker compose -f docker-compose.prod.yml logs -f redis-cache
 
-### Dev
+## Dev
 logapp:
 	docker compose logs -f weather-api-server
 logcache:

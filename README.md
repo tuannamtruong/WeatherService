@@ -7,7 +7,11 @@ Idea from https://roadmap.sh/projects/weather-api-wrapper-service
 
 Clone the repository to local machine.
 
-To build the go app -> dockerize the app -> run the app as API endpoint
+To build the go app
+
+`make build` 
+
+To build the go app -> dockerize the app
 
 `make dock` 
 
@@ -15,7 +19,11 @@ To build the go app -> dockerize the app -> run the app as console application, 
 
 `make dock MODE=CON`
 
-To build the go app -> dockerize the app -> run the app + redis
+To build the go app -> dockerize the app -> run the app as API server
+
+`make dockrun` 
+
+To build the go app -> dockerize the app -> run the app as API server + redis
 
 `make buildup`
 

@@ -126,7 +126,7 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	json.NewEncoder(w).Encode(v)
 }
 
-// writeJSON sends a JSON-encoded body with the given status code.
+// check if the app can reach redis cache server.
 func (s *Server) pingRedis(w http.ResponseWriter, r *http.Request) {
 	var d net.Dialer
 	redisUrl := os.Getenv("REDIS_URL")
@@ -134,7 +134,7 @@ func (s *Server) pingRedis(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		writeJSON(w, http.StatusServiceUnavailable, APIResponse{
 			Success:     false,
-			Message:     fmt.Sprintf("RedisURL in configuration is not valid. %w", err),
+			Message:     fmt.Sprintf("RedisURL in configuration is not valid. %v", err),
 			Description: err.Error(),
 		})
 		return

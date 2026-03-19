@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: weather-app
+data:
+  redis.conf: |
+    bind 0.0.0.0
+    port 6379
+    protected-mode no
+    maxmemory 64mb
+    maxmemory-policy allkeys-lru
+    save 3600 1
+    dbfilename dump.rdb
+    dir /data

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weather-api
+  namespace: weather-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weather-api
+  template:
+    metadata:
+      labels:
+        app: weather-api
+    spec:
+      containers:
+        - name: weather-api
+          image: weather-go-app:dev
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: weather-api-config
+          env:
+            - name: VISUALCROSSING_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: weather-api-secret
+                  key: VISUALCROSSING_API_KEY
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: 8080
+          #   initialDelaySeconds: 5
+          #   periodSeconds: 10
+          # readinessProbe:
+          #   exec:
+          #     command:
+          #       - wget
+          #       - -qO-
+          #       - http://localhost:8080/api/v1/weather/health
