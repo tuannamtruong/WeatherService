@@ -19,7 +19,7 @@ To build the go app -> dockerize the app -> run the app + redis
 
 `make buildup`
 
-To test with CLI
+Simple API Call in CLI for Karlsruhe.
 
 `curl --location 'localhost:12345/api/weather?location=Karlsruhe'`
 
