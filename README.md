@@ -34,6 +34,7 @@ To see what happening in redis
 
 ## Mode
 CON: running as console app.
+
 API: running as API Server.
 
 ### Console Mode
