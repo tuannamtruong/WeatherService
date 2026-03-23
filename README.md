@@ -5,7 +5,13 @@ Idea from https://roadmap.sh/projects/weather-api-wrapper-service
 
 ## Getting Started
 
+### Requirements
+
 Clone the repository to local machine.
+
+Docker, kubectl, minikube installed.
+
+### To build the app
 
 To build the go app
 
@@ -15,17 +21,43 @@ To build the go app -> dockerize the app
 
 `make dock` 
 
-To build the go app -> dockerize the app -> run the app as console application, which get weather information for Karlsruhe then stop
+To build the go app -> dockerize the app -> apply k8s infrastructure
+
+`make install` 
+
+### To run the app
+>As go application in host system
+
+`make run` 
+
+>With Docker 
+
+run the app as console application, which get weather information for Karlsruhe then stop
 
 `make dock MODE=CON`
 
-To build the go app -> dockerize the app -> run the app as API server
+run the app as API server
 
 `make dockrun` 
 
-To build the go app -> dockerize the app -> run the app as API server + redis
+run the app as API server + cache (docker compose on port 8085)
 
 `make buildup`
+
+>With K8s
+
+To apply infrastructure and port forward locally on port 8080
+
+`make kpf`
+
+### To clean up 
+
+Remove docker image of the app
+Remove all k8s applied
+
+`make cleanup`
+
+## While the app is running
 
 Simple API Call in CLI for Karlsruhe.
 
@@ -39,8 +71,7 @@ To see what happening in redis
 
 `make prodlogcache`
 
-
-## Mode
+## Running Modes
 CON: running as console app.
 
 API: running as API Server.
@@ -48,7 +79,7 @@ API: running as API Server.
 ### Console Mode
 Print Karlsruhe weather to console
 ### API Mode
-Export API at `localhost:8080/api/weather`
+Expose API at `localhost:8080/api/weather`
 
 Parameters: `location`
 
