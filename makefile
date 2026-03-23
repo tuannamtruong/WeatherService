@@ -7,21 +7,35 @@ REDIS_IMG := redis:8-alpine
 MODE ?= API
 
 # Dev Cycle makes for go app
+## Build/develop phase
 build:
 	go mod tidy
 	go fmt ./...
 	go vet ./...
-# go build -buildvcs=false cmd/weatherApi/weather.go
-	
+	go build -buildvcs=false cmd/weatherApi/weather.go
+
+dockbuild: build
+	docker build --progress=plain -f dockerfile -t weather-go-app:dev .
+
+kapply:
+	kubectl apply -f k8s/app-namespace.yaml
+	kubectl apply -f k8s/.
+
+install: build dockbuild kapply
+
+## Run phase
 run: 
 	go run -buildvcs=false cmd/weatherApi/weather.go -mode=$(MODE)
 
-dock: build
-	docker build -f dockerfile -t weather-go-app:dev .
-
-dockrun: dock
+dockrun: 
 	docker run --rm -p 8085:8080 --name weather-go-app-dev weather-go-app:dev ./weather-service -mode=$(MODE) -port=8080
 
+dock: dockbuild dockrun
+
+kpf: 
+	minikube image load weather-go-app:dev
+	kubectl wait --for=condition=Ready pod -l app=weather-api -n weather-app && \
+	kubectl port-forward svc/weather-api -n weather-app 8080:80
 
 # Redis
 ## Start redis container if it exists, otherwise create and start it
@@ -35,7 +49,7 @@ redis:
 
 # Docker compose
 
-## Build go app before compose
+## Build go app before compose up
 buildup:
 	go mod tidy
 	go build -buildvcs=false cmd/weatherApi/weather.go
@@ -57,5 +71,14 @@ prodlogcache:
 ## Dev
 logapp:
 	docker compose logs -f weather-api-server
+
 logcache:
 	docker compose logs -f redis-cache
+
+# Clean up
+cleanup:
+	kubectl delete -f k8s/.
+	docker rmi weather-go-app:dev
+
+
+
