@@ -12,7 +12,7 @@ build:
 	go mod tidy
 	go fmt ./...
 	go vet ./...
-	go build -buildvcs=false cmd/weatherApi/weather.go
+	go build -o bin/weather-service -buildvcs=false cmd/weatherApi/weather.go 
 
 dockbuild: build
 	docker build --progress=plain -f dockerfile -t weather-go-app:dev .
@@ -52,7 +52,7 @@ redis:
 ## Build go app before compose up
 buildup:
 	go mod tidy
-	go build -buildvcs=false cmd/weatherApi/weather.go
+	go build -o bin/weather-service -buildvcs=false cmd/weatherApi/weather.go
 	docker build -f dockerfile -t weather-go-app:dev .
 	docker compose up -d
 
