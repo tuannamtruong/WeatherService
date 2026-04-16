@@ -34,4 +34,7 @@ go.work.sum
 # .idea/
 # .vscode/
 
+# Terraform
 .terraform
+deploy.plan
+*.tfplan
