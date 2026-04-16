@@ -39,9 +39,25 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) routes() {
 	log.Println("Setting up routes")
+	s.httpHandler.HandleFunc("/health", s.handleHealth)
 	s.httpHandler.HandleFunc("/api/weather", s.handleWeather)
 	s.httpHandler.HandleFunc("/api/weather/windspeed", s.handleWindSpeed)
 	s.httpHandler.HandleFunc("/api/pingRedis", s.pingRedis)
+}
+
+func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeJSON(w, http.StatusMethodNotAllowed, APIResponse{Message: "method not allowed"})
+		return
+	}
+
+	writeJSON(w, http.StatusOK, APIResponse{
+		Success: true,
+		Message: "ok",
+		Details: map[string]any{
+			"cacheEnabled": s.cache != nil,
+		},
+	})
 }
 
 // Get the query from the Url request.
