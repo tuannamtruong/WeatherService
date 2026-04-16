@@ -40,6 +40,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *Server) routes() {
 	log.Println("Setting up routes")
 	s.httpHandler.HandleFunc("/api/weather", s.handleWeather)
+	s.httpHandler.HandleFunc("/api/weather/windspeed", s.handleWindSpeed)
 	s.httpHandler.HandleFunc("/api/pingRedis", s.pingRedis)
 }
 
@@ -99,6 +100,91 @@ func (s *Server) handleWeather(w http.ResponseWriter, r *http.Request) {
 		Success: true,
 		Message: "Weather data for " + location,
 		Details: weatherCondition})
+}
+
+// WindSpeedEntry holds wind speed data for a single day.
+type WindSpeedEntry struct {
+	Date      string  `json:"date"`
+	WindSpeed float64 `json:"windspeed"`
+	WindGust  float64 `json:"windgust"`
+	WindDir   float64 `json:"winddir"`
+}
+
+// WindSpeedResponse is the payload returned by /api/weather/windspeed.
+type WindSpeedResponse struct {
+	Location         string           `json:"location"`
+	CurrentWindSpeed float64          `json:"currentWindspeed"`
+	CurrentWindGust  float64          `json:"currentWindgust"`
+	CurrentWindDir   float64          `json:"currentWinddir"`
+	DailyWindSpeed   []WindSpeedEntry `json:"dailyWindspeed"`
+}
+
+// handleWindSpeed returns wind speed data (current + per-day) for a location.
+func (s *Server) handleWindSpeed(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeJSON(w, http.StatusMethodNotAllowed, APIResponse{Message: "method not allowed"})
+		return
+	}
+	location := parseQuery(r)
+	ctx := r.Context()
+	var weatherCondition *weatherService.WeatherCondition
+
+	// Cache lookup
+	if s.cache != nil {
+		rawCache, err := s.cache.Get(ctx, location)
+		if err != nil {
+			log.Printf("Cache miss for '%s'.", location)
+		} else if jsonErr := json.Unmarshal(rawCache, &weatherCondition); jsonErr == nil {
+			log.Printf("Cache hit for '%s'.", location)
+		}
+	}
+
+	// Fetch from upstream if not cached
+	if weatherCondition == nil {
+		var err error
+		weatherCondition, err = s.weatherService.GetWeather(location)
+		if err != nil {
+			log.Printf("HTTP request failed: %v", err)
+			writeJSON(w, http.StatusBadGateway, APIResponse{
+				Success:     false,
+				Message:     "Failed to get weather for " + location,
+				Description: err.Error(),
+			})
+			return
+		}
+
+		// Cache the full result for reuse by other handlers
+		if s.cache != nil {
+			if rawCache, jsonErr := json.Marshal(weatherCondition); jsonErr == nil {
+				if err := s.cache.Set(ctx, location, rawCache); err != nil {
+					log.Printf("Cache write error: %v", err)
+				}
+				log.Printf("Cache saved for '%s'", location)
+			}
+		}
+	}
+
+	// Build wind speed payload
+	resp := WindSpeedResponse{Location: location}
+	if weatherCondition.CurrentConditions != nil {
+		resp.CurrentWindSpeed = weatherCondition.CurrentConditions.WindSpeed
+		resp.CurrentWindGust = weatherCondition.CurrentConditions.WindGust
+		resp.CurrentWindDir = weatherCondition.CurrentConditions.WindDir
+	}
+	for _, day := range weatherCondition.DayConditions {
+		resp.DailyWindSpeed = append(resp.DailyWindSpeed, WindSpeedEntry{
+			Date:      day.Datetime,
+			WindSpeed: day.WindSpeed,
+			WindGust:  day.WindGust,
+			WindDir:   day.WindDir,
+		})
+	}
+
+	writeJSON(w, http.StatusOK, APIResponse{
+		Success: true,
+		Message: "Wind speed data for " + location,
+		Details: resp,
+	})
 }
 
 func InitServer(weatherService *weatherService.WeatherClient, port int, cache *cache.Cache) *http.Server {
