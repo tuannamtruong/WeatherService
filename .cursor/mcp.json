@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "terraform": {
+      "command": "terraform-mcp-server",
+      "args": ["stdio"],
+      "env": {
+        "ENABLE_TF_OPERATIONS": "true",
+        "AWS_REGION": "us-east-1"
+      }
+    }
+  }
+} 
