@@ -38,6 +38,7 @@ go.work.sum
 .terraform
 deploy.plan
 *.tfplan
+*.tfstate
 
 # Binaries
 bin/
