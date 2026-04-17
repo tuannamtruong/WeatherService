@@ -17,12 +17,12 @@ Your job is to deploy infrastructure **phase by phase**, validate health after e
 ---
 
 ## Phase 0 — Init & plan
+WORKDIR: terraform-weatherApp
 
 ### Execute
 ```bash
 terraform init
 terraform validate
-terraform plan -var="ami_id=<AMI_ID>" -out=tfplan
 ```
 
 ### Validate
@@ -40,13 +40,15 @@ terraform plan -var="ami_id=<AMI_ID>" -out=tfplan
 
 ### Execute
 ```bash
-terraform apply -var="ami_id=<AMI_ID>" \
+terraform plan -var="ami_id=<AMI_ID>" -out=network.tfplan \
   -target=aws_vpc.weather_app \
   -target=aws_internet_gateway.weather_app \
   -target=aws_subnet.public \
   -target=aws_route_table.public \
   -target=aws_route_table_association.public \
-  -auto-approve
+  -auto-approve 
+
+terraform apply "network.tfplan"
 ```
 
 ### Validate
@@ -92,10 +94,10 @@ aws ec2 describe-route-tables \
 
 ### Execute
 ```bash
-terraform apply -var="ami_id=<AMI_ID>" \
+terraform plan -var="ami_id=<AMI_ID>" -out=security-groups.tfplan \
   -target=aws_security_group.alb \
-  -target=aws_security_group.app \
-  -auto-approve
+  -target=aws_security_group.app
+terraform apply "security-groups.tfplan"
 ```
 
 ### Validate
@@ -125,11 +127,11 @@ aws ec2 describe-security-groups \
 
 ### Execute
 ```bash
-terraform apply -var="ami_id=<AMI_ID>" \
+terraform plan -var="ami_id=<AMI_ID>" -out=load-balancer.tfplan \
   -target=aws_lb.weather_app \
   -target=aws_lb_target_group.weather_app \
-  -target=aws_lb_listener.http \
-  -auto-approve
+  -target=aws_lb_listener.http
+terraform apply "load-balancer.tfplan"
 ```
 
 ### Validate
@@ -166,10 +168,10 @@ aws elbv2 describe-listeners \
 
 ### Execute
 ```bash
-terraform apply -var="ami_id=<AMI_ID>" \
+terraform plan -var="ami_id=<AMI_ID>" -out=compute.tfplan \
   -target=aws_launch_template.weather_app \
-  -target=aws_autoscaling_group.weather_app \
-  -auto-approve
+  -target=aws_autoscaling_group.weather_app
+terraform apply "compute.tfplan"
 ```
 
 ### Validate
@@ -224,7 +226,8 @@ curl -o /dev/null -s -w "%{http_code}" http://$ALB_DNS
 
 ### Execute
 ```bash
-terraform apply -var="ami_id=<AMI_ID>" -auto-approve
+terraform plan -var="ami_id=<AMI_ID>" -out=final.tfplan
+terraform apply "final.tfplan"
 terraform output
 ```
 
