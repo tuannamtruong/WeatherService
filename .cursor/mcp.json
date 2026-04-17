@@ -2,11 +2,23 @@
   "mcpServers": {
     "terraform": {
       "command": "terraform-mcp-server",
-      "args": ["stdio"],
+      "args": [
+        "stdio"
+      ],
       "env": {
         "ENABLE_TF_OPERATIONS": "true",
         "AWS_REGION": "us-east-1"
       }
+    },
+    "awslabs.cloudwatch-mcp-server": {
+      "autoApprove": [],
+      "disabled": false,
+      "command": "uvx awslabs.cloudwatch-mcp-server@latest",
+      "env": {
+        "AWS_PROFILE": "cursor-to-aws-profile",
+        "FASTMCP_LOG_LEVEL": "ERROR"
+      },
+      "transportType": "stdio"
     }
   }
-} 
+}
