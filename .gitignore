@@ -26,9 +26,12 @@ go.work.sum
 
 # env file
 .env
+.env.*
+app/.env
+app/.env.*
 
 #secrets
-#config.json
+config.json
 
 # Editor/IDE
 # .idea/
