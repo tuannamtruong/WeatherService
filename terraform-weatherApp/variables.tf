@@ -32,3 +32,21 @@ variable "app_port" {
   type        = number
   default     = 8080
 }
+
+variable "weather_api_key" {
+  description = "Visual Crossing API key used by the weather service."
+  type        = string
+  sensitive   = true
+}
+
+variable "app_repo_url" {
+  description = "Git repository URL used to fetch the weather service source."
+  type        = string
+  default     = "https://github.com/tuannamtruong/WeatherService.git"
+}
+
+variable "app_repo_branch" {
+  description = "Git branch checked out on the EC2 instance."
+  type        = string
+  default     = "main"
+}

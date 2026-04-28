@@ -1,0 +1,9 @@
+aws_region          = "eu-central-1"
+ami_id              = "ami-0de6934e87badb694"
+instance_type       = "t3.micro"
+vpc_cidr            = "10.0.0.0/16"
+public_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24"]
+app_port            = 8080
+weather_api_key     = "UAQY6624357PSAQM5KQAYJS8W"
+app_repo_url        = "https://github.com/tuannamtruong/WeatherService.git"
+app_repo_branch     = "main"

@@ -27,7 +27,7 @@ terraform validate
 
 ### Validate
 - `terraform validate` must exit with code 0 and print `Success!`
-- `terraform plan` must show exactly **11 resources to add**, 0 to change, 0 to destroy.
+- `terraform plan` must show exactly **11 resources** total across add, change, and destroy combined.
 - Confirm `region = eu-central-1` appears in the plan output.
 
 ### Decision

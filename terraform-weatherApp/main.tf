@@ -127,7 +127,7 @@ resource "aws_lb_target_group" "weather_app" {
 
   health_check {
     enabled             = true
-    path                = "/"
+    path                = "/health"
     matcher             = "200-399"
     healthy_threshold   = 2
     unhealthy_threshold = 2
@@ -155,6 +155,64 @@ resource "aws_launch_template" "weather_app" {
   instance_type = var.instance_type
 
   vpc_security_group_ids = [aws_security_group.app.id]
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    set -euxo pipefail
+
+    if command -v dnf >/dev/null 2>&1; then
+      dnf update -y
+      dnf install -y git golang
+    else
+      yum update -y
+      amazon-linux-extras install golang1.22 -y || true
+      yum install -y git golang
+    fi
+
+    install -d -o ec2-user -g ec2-user /opt/weather-service
+    cd /opt/weather-service
+
+    if [ ! -d .git ]; then
+      sudo -u ec2-user git clone --branch ${var.app_repo_branch} ${var.app_repo_url} .
+    else
+      sudo -u ec2-user git fetch --all
+      sudo -u ec2-user git checkout ${var.app_repo_branch}
+      sudo -u ec2-user git pull --ff-only origin ${var.app_repo_branch}
+    fi
+
+    cat > /opt/weather-service/config.json <<CONFIG
+    {
+      "ApiKey": "${var.weather_api_key}"
+    }
+    CONFIG
+
+    cd /opt/weather-service
+    sudo -u ec2-user /usr/bin/env GOCACHE=/tmp/go-build go build -o /opt/weather-service/weather-service -buildvcs=false ./cmd/weatherApi/weather.go
+
+    cat > /etc/systemd/system/weather-service.service <<SERVICE
+    [Unit]
+    Description=Weather API service
+    After=network-online.target
+    Wants=network-online.target
+
+    [Service]
+    Type=simple
+    WorkingDirectory=/opt/weather-service
+    ExecStart=/opt/weather-service/weather-service -mode=API -port=${var.app_port}
+    Restart=always
+    RestartSec=5
+    User=ec2-user
+    Group=ec2-user
+    Environment=HOME=/home/ec2-user
+
+    [Install]
+    WantedBy=multi-user.target
+    SERVICE
+
+    systemctl daemon-reload
+    systemctl enable weather-service
+    systemctl restart weather-service
+  EOF
+  )
 
   tag_specifications {
     resource_type = "instance"
