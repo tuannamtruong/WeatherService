@@ -37,8 +37,8 @@ func main() {
 	weatherClient := weatherService.NewWeatherClient(config.WeatherServiceApiKey)
 
 	// Redis
-	redisUrl := os.Getenv("REDIS_URL")
-	cache, err := cache.NewCache(redisUrl)
+	redisURL := os.Getenv("REDIS_URL")
+	cache, err := cache.NewCache(redisURL)
 	if err != nil {
 		log.Printf("Caching unavailable (%v).", err)
 	} else {
@@ -50,12 +50,12 @@ func main() {
 	case "CON":
 		runAsConsoleApplication(weatherClient)
 	case "API":
-		runAsApiServer(weatherClient, port, cache)
+		runAsAPIServer(weatherClient, port, cache)
 	}
 }
 
-// Run the application as an API server
-func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int, cache *cache.Cache) {
+// Run the application as an API server.
+func runAsAPIServer(weatherClient *weatherService.WeatherClient, port *int, cache *cache.Cache) {
 	log.Printf("Initializing API Server")
 	srv := api.InitServer(weatherClient, *port, cache)
 	go func() {
@@ -65,13 +65,12 @@ func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int, cach
 		}
 	}()
 
-	// Graceful Shutdown
+	// Graceful shutdown.
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Println("Shutting down")
 
-	// Safe Exit
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
@@ -80,7 +79,7 @@ func runAsApiServer(weatherClient *weatherService.WeatherClient, port *int, cach
 	log.Println("Server stopped")
 }
 
-// Run the application as a console application
+// Run the application as a console application.
 func runAsConsoleApplication(weatherClient *weatherService.WeatherClient) {
 	log.Printf("Running in Console Mode")
 	console.GetKarlsruheWeather(weatherClient)

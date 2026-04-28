@@ -4,3 +4,4 @@ obj/
 vendor/
 *.exe
 *.test
+config.json
